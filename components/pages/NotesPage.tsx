@@ -6,7 +6,7 @@ import { getDaysLeft, subColor, URGENCY_COLOR, getUrgency, ls } from '@/lib/util
 interface Props { tasks: Task[] }
 
 export default function NotesPage({ tasks }: Props) {
-  const fromTasks = [...new Set(tasks.map(t => t.subject).filter(Boolean))]
+  const fromTasks = Array.from(new Set(tasks.map(t => t.subject).filter(Boolean))) as string[]
   const [notes,  setNotes]  = useState<Record<string, string>>({})
   const [active, setActive] = useState('General')
   const [newSub, setNewSub] = useState('')
