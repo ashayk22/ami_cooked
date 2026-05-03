@@ -24,15 +24,12 @@ function getGreeting() {
 function getMiniCalendar(tasks: Task[]) {
   const today = new Date()
   return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(today)
-    d.setDate(today.getDate() + i)
+    const d = new Date(today); d.setDate(today.getDate() + i)
     const key = d.toISOString().split('T')[0]
     const dayTasks = tasks.filter(t => !t.done && t.deadline?.startsWith(key))
     return {
       label: i === 0 ? 'Today' : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()],
-      date: d.getDate(),
-      tasks: dayTasks,
-      isToday: i === 0,
+      date: d.getDate(), tasks: dayTasks, isToday: i === 0,
     }
   })
 }
@@ -76,7 +73,7 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
                    : score < 75 ? 'text-orange-700 bg-orange-100 border-orange-300'
                    : 'text-red-700 bg-red-100 border-red-300'
   const verdict = score < 25 ? "You're in good shape — keep the pace."
-                : score < 50 ? "A few things need attention. Prioritise by marks."
+                : score < 50 ? "A few things need attention."
                 : score < 75 ? "Things are piling up. Clear overdue first."
                 : "DEFCON 1. Submit whatever you have."
 
@@ -97,77 +94,109 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
       {showNotif && <NotifBanner tasks={tasks} onClose={() => setShowNotif(false)} />}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Good {getGreeting()} 👋</h1>
-          <p className="text-sm font-medium text-slate-500 mt-0.5">
-            {overdue.length > 0
-              ? `⚠️ ${overdue.length} overdue — deal with these first.`
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Good {getGreeting()} 👋</h1>
+          <p className="text-xs md:text-sm font-medium text-slate-500 mt-0.5 truncate">
+            {overdue.length > 0 ? `⚠️ ${overdue.length} overdue — deal with these first.`
               : pending.length > 0 ? `${pending.length} tasks on your plate.`
-              : "Nothing pending. You're not cooked 🎉"}
+              : "Nothing pending 🎉"}
           </p>
         </div>
-        <button className="btn-primary" onClick={() => setShowAdd(true)}>
+        {/* Add button — hidden on mobile (FAB handles it) */}
+        <button className="btn-primary hidden md:flex flex-shrink-0" onClick={() => setShowAdd(true)}>
           <Plus size={15} /> Add task
         </button>
       </div>
 
-      {/* ── CARD GRID (Option C) ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {/* Stat cards */}
-        <div className={cn('card px-4 py-3 flex items-center gap-3', overdue.length > 0 && 'border-red-300 bg-red-50')}>
-          <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0', overdue.length > 0 ? 'bg-red-200' : 'bg-slate-100')}>
-            <AlertTriangle size={16} className={overdue.length > 0 ? 'text-red-600' : 'text-slate-500'} />
+      {/* Stats — 2 cols mobile, 4 cols desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+        <div className={cn('card px-3 md:px-4 py-3 flex items-center gap-2 md:gap-3', overdue.length > 0 && 'border-red-300 bg-red-50')}>
+          <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0', overdue.length > 0 ? 'bg-red-200' : 'bg-slate-100')}>
+            <AlertTriangle size={15} className={overdue.length > 0 ? 'text-red-600' : 'text-slate-500'} />
           </div>
           <div>
-            <p className={cn('text-2xl font-bold', overdue.length > 0 ? 'text-red-700' : 'text-slate-900')}>{overdue.length}</p>
-            <p className="text-xs font-semibold text-slate-500">Overdue</p>
+            <p className={cn('text-xl md:text-2xl font-bold leading-none', overdue.length > 0 ? 'text-red-700' : 'text-slate-900')}>{overdue.length}</p>
+            <p className="text-xs font-semibold text-slate-500 mt-0.5">Overdue</p>
           </div>
         </div>
-        <div className="card px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-            <Clock size={16} className="text-amber-600" />
+        <div className="card px-3 md:px-4 py-3 flex items-center gap-2 md:gap-3">
+          <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+            <Clock size={15} className="text-amber-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-900">{thisWeek.length}</p>
-            <p className="text-xs font-semibold text-slate-500">This week</p>
+            <p className="text-xl md:text-2xl font-bold text-slate-900 leading-none">{thisWeek.length}</p>
+            <p className="text-xs font-semibold text-slate-500 mt-0.5">This week</p>
           </div>
         </div>
-        <div className="card px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-            <TrendingUp size={16} className="text-emerald-600" />
+        <div className="card px-3 md:px-4 py-3 flex items-center gap-2 md:gap-3">
+          <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+            <TrendingUp size={15} className="text-emerald-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-900">{done.length}</p>
-            <p className="text-xs font-semibold text-slate-500">Completed</p>
+            <p className="text-xl md:text-2xl font-bold text-slate-900 leading-none">{done.length}</p>
+            <p className="text-xs font-semibold text-slate-500 mt-0.5">Completed</p>
           </div>
         </div>
-        <div className="card px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-            <BookOpen size={16} className="text-indigo-600" />
+        <div className="card px-3 md:px-4 py-3 flex items-center gap-2 md:gap-3">
+          <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
+            <BookOpen size={15} className="text-indigo-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-900">{totalMarks}</p>
-            <p className="text-xs font-semibold text-slate-500">Marks at stake</p>
+            <p className="text-xl md:text-2xl font-bold text-slate-900 leading-none">{totalMarks}</p>
+            <p className="text-xs font-semibold text-slate-500 mt-0.5">Marks at stake</p>
           </div>
         </div>
       </div>
 
-      {/* ── MAIN GRID (Option A — dense layout) ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-4 items-start">
-
-        {/* Left: task list */}
-        <div className="card overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b-2 border-slate-200 bg-slate-50">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 text-sm">Assignments & Exams</span>
-              <span className="badge badge-indigo">{pending.length}</span>
+      {/* Cooked-o-meter — full width on mobile */}
+      <div className="card overflow-hidden">
+        <div className="flex items-center justify-between px-3 md:px-4 py-2.5 border-b-2 border-slate-200 bg-slate-50">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Cooked-o-meter</span>
+          <span className={cn('badge text-xs', scoreColor)}>{scoreLabel}</span>
+        </div>
+        <div className="px-3 md:px-4 py-3 space-y-2">
+          <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden border border-slate-300">
+            <div className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${score}%`, background: 'linear-gradient(90deg,#10b981,#f59e0b,#ef4444)' }} />
+          </div>
+          <p className="text-xs font-medium text-slate-600">{verdict}</p>
+          {priorities.length > 0 && (
+            <div className="space-y-1.5 pt-1">
+              {priorities.map((t, i) => {
+                const d = getDaysLeft(t.deadline)
+                return (
+                  <div key={t.id} className="flex items-center gap-2 rounded-lg bg-slate-50 border-2 border-slate-200 px-2.5 py-1.5">
+                    <span className={cn('w-4 h-4 rounded flex items-center justify-center text-white text-xs font-bold flex-shrink-0',
+                      i === 0 ? 'bg-red-500' : i === 1 ? 'bg-amber-500' : 'bg-slate-400'
+                    )}>{i+1}</span>
+                    <span className="flex-1 text-xs font-semibold text-slate-800 truncate">{t.title}</span>
+                    <span className={cn('text-xs font-bold flex-shrink-0', d < 0 ? 'text-red-600' : d <= 2 ? 'text-amber-600' : 'text-slate-400')}>
+                      {d < 0 ? `${Math.abs(d)}d` : d === 0 ? 'today' : `${d}d`}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
-            <div className="flex gap-0.5 bg-slate-200 rounded-lg p-0.5">
+          )}
+        </div>
+      </div>
+
+      {/* Main grid — stacked on mobile, side by side on lg */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-4 items-start">
+
+        {/* Task list */}
+        <div className="card overflow-hidden">
+          <div className="flex items-center justify-between px-3 md:px-4 py-2.5 border-b-2 border-slate-200 bg-slate-50">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-bold text-slate-900 text-sm truncate">Tasks</span>
+              <span className="badge badge-indigo flex-shrink-0">{pending.length}</span>
+            </div>
+            <div className="flex gap-0.5 bg-slate-200 rounded-lg p-0.5 flex-shrink-0">
               {FILTERS.map(f => (
                 <button key={f.id} onClick={() => setFilter(f.id)} className={cn(
-                  'px-2.5 py-1 rounded-md text-xs font-bold transition-colors',
-                  filter === f.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                  'px-2 py-1 rounded-md text-xs font-bold transition-colors',
+                  filter === f.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
                 )}>{f.label}</button>
               ))}
             </div>
@@ -180,19 +209,18 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
                 const d = getDaysLeft(t.deadline)
                 const isOverdue = d < 0 && !t.done
                 return (
-                  <li key={t.id} className={cn('px-4 py-2.5 flex items-center gap-3 hover:bg-slate-50 transition-colors', t.done && 'opacity-50')}>
+                  <li key={t.id} className={cn('px-3 md:px-4 py-3 flex items-center gap-2.5 md:gap-3', t.done && 'opacity-50')}>
                     <button
                       onClick={() => handleToggle(t.id)}
-                      className={cn(
-                        'w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all',
+                      className={cn('w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all',
                         t.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 hover:border-indigo-500'
                       )}
                     >
                       {t.done && <Check size={10} strokeWidth={3} />}
                     </button>
                     <div className="flex-1 min-w-0">
-                      <p className={cn('text-sm font-semibold', t.done ? 'line-through text-slate-400' : 'text-slate-900')}>{t.title}</p>
-                      <div className="flex items-center gap-2 mt-0.5">
+                      <p className={cn('text-sm font-semibold leading-snug', t.done ? 'line-through text-slate-400' : 'text-slate-900')}>{t.title}</p>
+                      <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                         {t.subject && <span className="text-xs font-medium text-slate-400">{t.subject}</span>}
                         {t.marks ? <span className="text-xs font-medium text-slate-400">{t.marks}m</span> : null}
                         <span className={cn('text-xs font-semibold', isOverdue ? 'text-red-600' : 'text-slate-400')}>
@@ -200,10 +228,10 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
                         </span>
                       </div>
                     </div>
-                    <span className={cn('badge flex-shrink-0 text-xs',
+                    <span className={cn('badge flex-shrink-0 text-xs hidden sm:inline-flex',
                       t.type === 'exam' ? 'badge-purple' : d < 0 ? 'badge-red' : d <= 3 ? 'badge-amber' : 'badge-green'
                     )}>
-                      {t.type === 'exam' ? 'Exam' : d < 0 ? 'Overdue' : d <= 3 ? 'Urgent' : 'OK'}
+                      {t.type === 'exam' ? 'Exam' : d < 0 ? 'Due' : d <= 3 ? '!' : 'OK'}
                     </span>
                     <button onClick={() => handleDelete(t.id)} className="p-1.5 rounded-lg hover:bg-red-100 text-slate-300 hover:text-red-600 transition-colors flex-shrink-0">
                       <Trash2 size={13} />
@@ -215,43 +243,8 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
           )}
         </div>
 
-        {/* Right column — dense cards */}
-        <div className="space-y-3">
-
-          {/* Cooked-o-meter — compact */}
-          <div className="card overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b-2 border-slate-200 bg-slate-50">
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Cooked-o-meter</span>
-              <span className={cn('badge text-xs', scoreColor)}>{scoreLabel}</span>
-            </div>
-            <div className="px-4 py-3 space-y-2">
-              <div className="h-3 bg-slate-200 rounded-full overflow-hidden border border-slate-300">
-                <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${score}%`, background: 'linear-gradient(90deg,#10b981,#f59e0b,#ef4444)' }}
-                />
-              </div>
-              <p className="text-xs font-medium text-slate-600 leading-relaxed">{verdict}</p>
-              <div className="space-y-1">
-                {priorities.map((t, i) => {
-                  const d = getDaysLeft(t.deadline)
-                  return (
-                    <div key={t.id} className="flex items-center gap-2 rounded-lg bg-slate-50 border-2 border-slate-200 px-2.5 py-1.5">
-                      <span className={cn('w-4 h-4 rounded flex items-center justify-center text-white text-xs font-bold flex-shrink-0',
-                        i === 0 ? 'bg-red-500' : i === 1 ? 'bg-amber-500' : 'bg-slate-400'
-                      )}>{i+1}</span>
-                      <span className="flex-1 text-xs font-semibold text-slate-800 truncate">{t.title}</span>
-                      <span className={cn('text-xs font-bold', d < 0 ? 'text-red-600' : d <= 2 ? 'text-amber-600' : 'text-slate-400')}>
-                        {d < 0 ? `${Math.abs(d)}d` : d === 0 ? 'today' : `${d}d`}
-                      </span>
-                    </div>
-                  )
-                })}
-                {!priorities.length && <p className="text-xs text-slate-400 text-center py-1">Nothing pending 🎉</p>}
-              </div>
-            </div>
-          </div>
-
+        {/* Right column — hidden on mobile (right rail covers this on desktop) */}
+        <div className="hidden lg:flex flex-col gap-3">
           {/* Mini 7-day calendar */}
           <div className="card overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b-2 border-slate-200 bg-slate-50">
@@ -263,7 +256,7 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
             <div className="p-2 grid grid-cols-7 gap-1">
               {miniCal.map((day, i) => (
                 <div key={i} className={cn(
-                  'flex flex-col items-center gap-0.5 py-1.5 px-0.5 rounded-lg border-2 transition-colors',
+                  'flex flex-col items-center gap-0.5 py-1.5 px-0.5 rounded-lg border-2',
                   day.isToday ? 'bg-indigo-50 border-indigo-300' : day.tasks.length > 0 ? 'bg-amber-50 border-amber-200' : 'border-slate-100 bg-slate-50'
                 )}>
                   <span className={cn('text-xs font-bold', day.isToday ? 'text-indigo-700' : 'text-slate-500')}>{day.label.slice(0,2)}</span>
@@ -278,20 +271,17 @@ export default function DashboardPage({ tasks, addTask, toggleTask, deleteTask, 
             </div>
           </div>
 
-          {/* Quick nav shortcuts */}
+          {/* Quick nav */}
           {setPage && (
             <div className="grid grid-cols-2 gap-2">
               {[
-                { page: 'timer' as Page,     icon: Timer,    label: 'Study Timer', color: 'text-indigo-600 bg-indigo-50 border-indigo-200 hover:bg-indigo-100' },
-                { page: 'analytics' as Page, icon: BarChart2, label: 'Analytics',   color: 'text-emerald-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100' },
-                { page: 'calendar' as Page,  icon: Calendar,  label: 'Calendar',    color: 'text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100' },
-                { page: 'streaks' as Page,   icon: Flame,     label: 'Streaks',     color: 'text-orange-600 bg-orange-50 border-orange-200 hover:bg-orange-100' },
+                { page: 'timer' as Page,     icon: Timer,    label: 'Timer',     color: 'text-indigo-600 bg-indigo-50 border-indigo-200 hover:bg-indigo-100' },
+                { page: 'analytics' as Page, icon: BarChart2, label: 'Analytics', color: 'text-emerald-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100' },
+                { page: 'calendar' as Page,  icon: Calendar,  label: 'Calendar',  color: 'text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100' },
+                { page: 'streaks' as Page,   icon: Flame,     label: 'Streaks',   color: 'text-orange-600 bg-orange-50 border-orange-200 hover:bg-orange-100' },
               ].map(({ page: pg, icon: Icon, label, color }) => (
-                <button
-                  key={pg}
-                  onClick={() => setPage(pg)}
-                  className={cn('flex items-center gap-2 rounded-xl border-2 px-3 py-2.5 text-xs font-bold transition-colors', color)}
-                >
+                <button key={pg} onClick={() => setPage(pg)}
+                  className={cn('flex items-center gap-2 rounded-xl border-2 px-3 py-2.5 text-xs font-bold transition-colors', color)}>
                   <Icon size={13} /> {label}
                 </button>
               ))}

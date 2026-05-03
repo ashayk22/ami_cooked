@@ -46,14 +46,14 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-100 flex items-start sm:items-center justify-center px-4 pt-8 sm:pt-0">
       {/* Paper grain */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.032]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")`,
         backgroundSize: '80px 80px',
       }} />
 
-      <div className="w-full max-w-sm space-y-6 relative z-10">
+      <div className="w-full max-w-sm space-y-5 relative z-10 pb-8">
 
         {/* Logo */}
         <div className="text-center space-y-2">

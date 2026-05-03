@@ -28,10 +28,10 @@ export default function AddTaskModal({ onAdd, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 px-0 sm:px-4"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="card w-full max-w-md p-6 animate-[slideUp_0.2s_ease]">
+      <div className="card w-full sm:max-w-md p-4 sm:p-6 animate-[slideUp_0.2s_ease] rounded-b-none sm:rounded-xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-semibold text-slate-900">New task</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">

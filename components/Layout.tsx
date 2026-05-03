@@ -8,22 +8,22 @@ export default function PageWrapper({
   maxWidth?: number
 }) {
   return (
-    <div style={{ maxWidth, margin: '0 auto' }} className="px-4 md:px-5 py-5 md:py-6 space-y-5">
+    <div style={{ maxWidth, margin: '0 auto' }} className="px-3 sm:px-4 md:px-5 py-4 md:py-6 space-y-4 md:space-y-5">
       {children}
     </div>
   )
 }
 
 export function PageHeader({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center justify-between">{children}</div>
+  return <div className="flex items-center justify-between gap-2">{children}</div>
 }
 
 export function PageTitle({ children }: { children: React.ReactNode }) {
-  return <h1 className="text-2xl font-bold text-slate-900">{children}</h1>
+  return <h1 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">{children}</h1>
 }
 
 export function PageSubtitle({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm font-medium text-slate-500 mt-0.5">{children}</p>
+  return <p className="text-xs md:text-sm font-medium text-slate-500 mt-0.5">{children}</p>
 }
 
 export function Panel({
@@ -32,10 +32,7 @@ export function Panel({
   children: React.ReactNode; style?: React.CSSProperties; className?: string
 }) {
   return (
-    <div
-      className={`card ${className}`}
-      style={{ position: 'relative', zIndex: 2, isolation: 'isolate', ...style }}
-    >
+    <div className={`card ${className}`} style={{ position: 'relative', zIndex: 2, isolation: 'isolate', ...style }}>
       {children}
     </div>
   )
@@ -43,7 +40,7 @@ export function Panel({
 
 export function PanelHeader({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`flex items-center gap-2 px-4 py-3 border-b-2 border-slate-200 bg-slate-50 ${className}`}>
+    <div className={`flex items-center gap-2 px-3 md:px-4 py-2.5 md:py-3 border-b-2 border-slate-200 bg-slate-50 ${className}`}>
       {children}
     </div>
   )
@@ -54,7 +51,7 @@ export function PanelBody({
 }: {
   children: React.ReactNode; style?: React.CSSProperties; className?: string
 }) {
-  return <div className={`px-4 py-3 ${className}`} style={style}>{children}</div>
+  return <div className={`px-3 md:px-4 py-3 ${className}`} style={style}>{children}</div>
 }
 
 export function StatCard({
@@ -63,14 +60,14 @@ export function StatCard({
   label: string; value: string | number; color?: string; icon?: React.ReactNode; sub?: string
 }) {
   return (
-    <div className="card px-4 py-3 flex items-center gap-3" style={{ position: 'relative', zIndex: 2, isolation: 'isolate' }}>
+    <div className="card px-3 md:px-4 py-3 flex items-center gap-2.5 md:gap-3" style={{ position: 'relative', zIndex: 2, isolation: 'isolate' }}>
       {icon && (
-        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${color}20` }}>
+        <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${color}20` }}>
           <span style={{ color }}>{icon}</span>
         </div>
       )}
       <div>
-        <p className="text-2xl font-bold text-slate-900">{value}</p>
+        <p className="text-xl md:text-2xl font-bold text-slate-900">{value}</p>
         <p className="text-xs font-semibold text-slate-500">{label}</p>
         {sub && <p className="text-xs text-slate-400">{sub}</p>}
       </div>
@@ -79,5 +76,5 @@ export function StatCard({
 }
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">{children}</p>
+  return <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 md:mb-3">{children}</p>
 }

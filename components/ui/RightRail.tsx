@@ -39,7 +39,7 @@ export default function RightRail({ tasks, addTask, toggleTask, toast, setPage }
   }
 
   return (
-    <aside className="flex flex-col gap-4 w-64 flex-shrink-0">
+    <aside className="flex flex-col gap-3 w-full flex-shrink-0">
 
       {/* Quick add */}
       {addTask && (

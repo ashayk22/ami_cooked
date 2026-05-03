@@ -172,10 +172,10 @@ export default function TimerPage({ tasks }: Props) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         {/* ── Timer card ── */}
-        <div className="card p-6 flex flex-col items-center gap-5">
+        <div className="card p-4 md:p-6 flex flex-col items-center gap-4 md:gap-5">
 
           {/* Mode tabs */}
           <div className="flex gap-1 bg-slate-100 rounded-lg p-1 w-full border-2 border-slate-200">
@@ -247,8 +247,8 @@ export default function TimerPage({ tasks }: Props) {
           )}
 
           {/* Ring */}
-          <div className="relative w-48 h-48">
-            <svg width="192" height="192" style={{ transform: 'rotate(-90deg)' }}>
+          <div className="relative w-40 h-40 md:w-48 md:h-48">
+            <svg width="160" height="160" className="md:!w-[192px] md:!h-[192px]" style={{ transform: 'rotate(-90deg)' }}>
               <circle cx="96" cy="96" r={R} fill="none" stroke="#e2e8f0" strokeWidth="10" />
               <circle
                 cx="96" cy="96" r={R}

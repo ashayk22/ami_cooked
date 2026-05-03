@@ -73,3 +73,17 @@ body::after {
 @keyframes slideUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
 @keyframes fadeIn  { from { opacity:0 } to { opacity:1 } }
 @keyframes spin    { from { transform:rotate(0deg) } to { transform:rotate(360deg) } }
+
+/* ── Mobile safe area (iPhone notch/home bar) ── */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { -webkit-text-size-adjust: 100%; }
+
+/* ── Prevent horizontal overflow on mobile ── */
+body { overflow-x: hidden; }
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ── Mobile touch targets ── */
+@media (max-width: 768px) {
+  button { min-height: 36px; }
+  .card { border-radius: 12px; }
+}
