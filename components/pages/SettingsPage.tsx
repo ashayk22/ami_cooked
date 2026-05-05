@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Eye, EyeOff, Download, Trash2 } from 'lucide-react'
+import { Eye, EyeOff, Download, Trash2, LogOut } from 'lucide-react'
 import type { Task, User } from '@/lib/types'
 import PageWrapper from '@/components/Layout'
 
@@ -8,9 +8,10 @@ interface Props {
   user: User; setUser: (u: User) => void
   tasks: Task[]; setTasks: (fn: Task[] | ((p: Task[]) => Task[])) => void
   toast: (msg: string) => void
+  signOut?: () => Promise<void>
 }
 
-export default function SettingsPage({ user, setUser, tasks, setTasks, toast }: Props) {
+export default function SettingsPage({ user, setUser, tasks, setTasks, toast, signOut }: Props) {
   const [form,    setForm]    = useState<User>({ ...user })
   const [apiKey,  setApiKey]  = useState(() => { try { return localStorage.getItem('amic_apikey') ?? '' } catch { return '' } })
   const [showKey, setShowKey] = useState(false)
@@ -104,6 +105,18 @@ export default function SettingsPage({ user, setUser, tasks, setTasks, toast }: 
         </div>
         <p className="text-xs text-slate-400">{tasks.length} total tasks · {tasks.filter(t => t.done).length} completed</p>
       </div>
+
+      {/* Sign out */}
+      {signOut && (
+        <div className="card p-4 border-red-200 bg-red-50">
+          <button
+            onClick={async () => { await signOut(); toast('👋 Signed out') }}
+            className="flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-800"
+          >
+            <LogOut size={15} /> Sign out of Am I Cooked?
+          </button>
+        </div>
+      )}
     </PageWrapper>
   )
 }

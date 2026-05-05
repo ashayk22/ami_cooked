@@ -172,7 +172,7 @@ export default function TimerPage({ tasks }: Props) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
 
         {/* ── Timer card ── */}
         <div className="card p-4 md:p-6 flex flex-col items-center gap-4 md:gap-5">
@@ -247,11 +247,11 @@ export default function TimerPage({ tasks }: Props) {
           )}
 
           {/* Ring */}
-          <div className="relative w-40 h-40 md:w-48 md:h-48">
-            <svg width="160" height="160" className="md:!w-[192px] md:!h-[192px]" style={{ transform: 'rotate(-90deg)' }}>
-              <circle cx="96" cy="96" r={R} fill="none" stroke="#e2e8f0" strokeWidth="10" />
+          <div className="relative w-52 h-52">
+            <svg width="208" height="208" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="104" cy="104" r={R} fill="none" stroke="#e2e8f0" strokeWidth="10" />
               <circle
-                cx="96" cy="96" r={R}
+                cx="104" cy="104" r={R}
                 fill="none"
                 stroke={col}
                 strokeWidth="10"
@@ -322,12 +322,12 @@ export default function TimerPage({ tasks }: Props) {
         </div>
 
         {/* ── Task picker ── */}
-        <div className="card flex flex-col overflow-hidden">
+        <div className="card overflow-hidden">
           <div className="px-5 py-4 border-b-2 border-slate-200">
             <h2 className="font-semibold text-slate-900">Pick a task</h2>
             <p className="text-xs text-slate-500 mt-0.5 font-medium">Select what you're working on this session.</p>
           </div>
-          <div className="flex-1 overflow-y-auto divide-y-2 divide-slate-100" style={{ maxHeight: 360 }}>
+          <div className="flex-1 overflow-y-auto divide-y-2 divide-slate-100" style={{ maxHeight: 220 }}>
             {!pending.length && (
               <p className="text-center text-sm text-slate-400 py-10 font-medium">No pending tasks 🎉</p>
             )}

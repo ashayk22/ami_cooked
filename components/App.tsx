@@ -59,7 +59,7 @@ export default function App() {
       case 'timer':     return <TimerPage       tasks={tasks} />
       case 'notes':     return <NotesPage       tasks={tasks} />
       case 'reminders': return <RemindersPage   tasks={tasks} />
-      case 'settings':  return <SettingsPage    {...pageProps} />
+      case 'settings':  return <SettingsPage    {...pageProps} signOut={signOut} />
       default:          return <DashboardPage  {...pageProps} setPage={setPage} />
     }
   }

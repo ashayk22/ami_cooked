@@ -30,5 +30,5 @@ Then copy the files from this repo into your project.
 ## Next Steps (Backend)
 1. `npm install @supabase/supabase-js`
 2. Add `.env.local` with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
-3. Replace localStorage calls with Supabase queries
+3. Replace localStorage calls with Supabase queries.
 4. Add Google OAuth via Supabase Auth.
