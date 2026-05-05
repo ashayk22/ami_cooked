@@ -10,6 +10,7 @@ export default function NotesPage({ tasks }: Props) {
   const [notes,  setNotes]  = useState<Record<string, string>>({})
   const [active, setActive] = useState('General')
   const [newSub, setNewSub] = useState('')
+  const [showSidebar, setShowSidebar] = useState(true)
 
   useEffect(() => {
     const saved = ls.get<Record<string, string>>('amic_notes', {})
@@ -34,89 +35,124 @@ export default function NotesPage({ tasks }: Props) {
     if (!notes[s]) saveNote(s, '')
   }
 
+  const handleSelectSubject = (s: string) => {
+    setActive(s)
+    setShowSidebar(false)
+  }
+
   return (
-    <div style={{ flex:1, display:'flex', overflow:'hidden', minHeight:0, height:'100%' }}>
+    <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', minHeight:0, height:'100%' }}>
 
-      {/* Sidebar */}
-      <div style={{ width:192, flexShrink:0, background:'#ffffff', borderRight:'1px solid #e2e8f0', display:'flex', flexDirection:'column' }}>
-        <div style={{ padding:'18px 12px 12px', borderBottom:'1px solid #e2e8f0' }}>
-          <div style={{ fontSize:11, fontWeight:700, marginBottom:10, color:'#0f172a' }}>Quick Notes</div>
-          <div style={{ display:'flex', gap:5 }}>
-            <input
-              value={newSub}
-              onChange={e=>setNewSub(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&addSubject()}
-              placeholder="New subject…"
-              style={{ flex:1, fontFamily:'var(--font-mono),monospace', fontSize:10, padding:'6px 8px', borderRadius:6, border:'1px solid #cbd5e1', background:'#e2e8f0', color:'#0f172a', outline:'none' }}
-            />
-            <button onClick={addSubject} style={{ padding:'6px 10px', borderRadius:6, border:'none', background:'#6366f1', color:'white', fontSize:13, fontWeight:700, cursor:'pointer' }}>+</button>
-          </div>
-        </div>
-
-        <div style={{ flex:1, overflowY:'auto', padding:'8px 6px', display:'flex', flexDirection:'column', gap:2 }}>
-          {allSubs.map(s => {
-            const count    = tasks.filter(t => t.subject===s && !t.done).length
-            const isActive = active === s
-            const col      = subColor(s)
-            return (
-              <button key={s} onClick={()=>setActive(s)} style={{
-                textAlign:'left', padding:'8px 9px', borderRadius:7,
-                fontSize:11, fontWeight:600, fontFamily:'var(--font-syne),sans-serif',
-                border:`1px solid ${isActive?col:'transparent'}`,
-                borderLeft:`3px solid ${isActive?col:'transparent'}`,
-                background:isActive?`${col}14`:'transparent',
-                color:isActive?col:'#475569',
-                cursor:'pointer', width:'100%',
-                display:'flex', alignItems:'center', justifyContent:'space-between',
-                transition:'all 0.12s',
-              }}>
-                <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s}</span>
-                {count>0&&<span style={{ fontFamily:'var(--font-mono),monospace', fontSize:8, color:'#d97706', marginLeft:4, flexShrink:0 }}>{count}</span>}
-              </button>
-            )
-          })}
-        </div>
+      {/* Mobile top bar */}
+      <div className="flex md:hidden items-center gap-2 px-3 py-2 border-b border-slate-200 bg-white flex-shrink-0">
+        {!showSidebar && (
+          <button
+            onClick={() => setShowSidebar(true)}
+            style={{ padding:'5px 10px', borderRadius:6, border:'1px solid #e2e8f0', background:'#f8fafc', color:'#475569', fontSize:11, fontWeight:600, cursor:'pointer', flexShrink:0 }}
+          >
+            ← Subjects
+          </button>
+        )}
+        <span style={{ fontSize:12, fontWeight:700, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
+          color: showSidebar ? '#0f172a' : subColor(active) }}>
+          {showSidebar ? 'Quick Notes' : `${active} notes`}
+        </span>
       </div>
 
-      {/* Editor — full width */}
-      <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', background:'#f8fafc', minHeight:0 }}>
-        <div style={{ width:'100%', flex:1, display:'flex', flexDirection:'column', padding:'24px 28px 20px', minHeight:0, overflow:'hidden' }}>
+      {/* Main row */}
+      <div style={{ flex:1, display:'flex', overflow:'hidden', minHeight:0 }}>
 
-          {/* Header */}
-          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:14, gap:12 }}>
-            <div>
-              <h2 style={{ fontFamily:'var(--font-serif),serif', fontSize:'1.4rem', marginBottom:3 }}>
-                <em style={{ color:subColor(active), fontStyle:'italic' }}>{active}</em> notes
-              </h2>
-              <div style={{ fontFamily:'var(--font-mono),monospace', fontSize:9, color:'#94a3b8' }}>
-                {activeTasks.length>0 ? `${activeTasks.length} pending task${activeTasks.length!==1?'s':''} in this subject` : 'No pending tasks here'}
-              </div>
-            </div>
-            <div style={{ display:'flex', gap:5, flexWrap:'wrap', justifyContent:'flex-end', maxWidth:260 }}>
-              {activeTasks.slice(0,2).map(t=>{
-                const d   = getDaysLeft(t.deadline)
-                const col = URGENCY_COLOR[getUrgency(t)]
-                return (
-                  <span key={t.id} style={{ fontFamily:'var(--font-mono),monospace', fontSize:13, padding:'4px 12px', borderRadius:20, background:`${col}18`, color:col, whiteSpace:'nowrap' }}>
-                    {t.title.length>18?t.title.slice(0,18)+'…':t.title} · {d<0?'overdue':d===0?'today':`${d}d`}
-                  </span>
-                )
-              })}
+        {/* Sidebar */}
+        <div
+          style={{
+            width:192, flexShrink:0, background:'#ffffff',
+            borderRight:'1px solid #e2e8f0', flexDirection:'column',
+            // On mobile: take full width when shown, hidden when not
+          }}
+          className={`${showSidebar ? 'flex w-full md:w-auto' : 'hidden md:flex'}`}
+        >
+          <div style={{ padding:'12px 12px 10px', borderBottom:'1px solid #e2e8f0' }}>
+            <div className="hidden md:block" style={{ fontSize:11, fontWeight:700, marginBottom:10, color:'#0f172a' }}>Quick Notes</div>
+            <div style={{ display:'flex', gap:5 }}>
+              <input
+                value={newSub}
+                onChange={e=>setNewSub(e.target.value)}
+                onKeyDown={e=>e.key==='Enter'&&addSubject()}
+                placeholder="New subject…"
+                style={{ flex:1, fontFamily:'var(--font-mono),monospace', fontSize:10, padding:'6px 8px', borderRadius:6, border:'1px solid #cbd5e1', background:'#e2e8f0', color:'#0f172a', outline:'none' }}
+              />
+              <button onClick={addSubject} style={{ padding:'6px 10px', borderRadius:6, border:'none', background:'#6366f1', color:'white', fontSize:13, fontWeight:700, cursor:'pointer' }}>+</button>
             </div>
           </div>
 
-          {/* Textarea */}
-          <textarea
-            value={notes[active]||''}
-            onChange={e=>saveNote(active,e.target.value)}
-            placeholder={`Notes for ${active}…\n\nFormulas, key points, reminders — anything.`}
-            style={{ flex:1, background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:9, padding:'16px 18px', color:'#0f172a', fontFamily:'var(--font-mono),monospace', fontSize:12, lineHeight:1.85, resize:'none', outline:'none', caretColor:'#6366f1', overflowY:'auto' }}
-          />
+          <div style={{ flex:1, overflowY:'auto', padding:'8px 6px', display:'flex', flexDirection:'column', gap:2 }}>
+            {allSubs.map(s => {
+              const count    = tasks.filter(t => t.subject===s && !t.done).length
+              const isActive = active === s
+              const col      = subColor(s)
+              return (
+                <button key={s} onClick={()=>handleSelectSubject(s)} style={{
+                  textAlign:'left', padding:'10px 9px', borderRadius:7,
+                  fontSize:12, fontWeight:600, fontFamily:'var(--font-syne),sans-serif',
+                  border:`1px solid ${isActive?col:'transparent'}`,
+                  borderLeft:`3px solid ${isActive?col:'transparent'}`,
+                  background:isActive?`${col}14`:'transparent',
+                  color:isActive?col:'#475569',
+                  cursor:'pointer', width:'100%',
+                  display:'flex', alignItems:'center', justifyContent:'space-between',
+                  transition:'all 0.12s',
+                }}>
+                  <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{s}</span>
+                  {count>0&&<span style={{ fontFamily:'var(--font-mono),monospace', fontSize:8, color:'#d97706', marginLeft:4, flexShrink:0 }}>{count}</span>}
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
-          {/* Footer */}
-          <div style={{ display:'flex', justifyContent:'space-between', marginTop:7, fontFamily:'var(--font-mono),monospace', fontSize:8, color:'#94a3b8' }}>
-            <span>Auto-saved</span>
-            <span>{charCount} chars · {(notes[active]||'').split('\n').filter(Boolean).length} lines</span>
+        {/* Editor */}
+        <div
+          style={{ flex:1, flexDirection:'column', overflow:'hidden', background:'#f8fafc', minHeight:0 }}
+          className={`${showSidebar ? 'hidden md:flex' : 'flex'}`}
+        >
+          <div style={{ width:'100%', flex:1, display:'flex', flexDirection:'column', padding:'16px 16px 14px', minHeight:0, overflow:'hidden' }}>
+
+            {/* Header */}
+            <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:14, gap:12 }}>
+              <div>
+                <h2 className="hidden md:block" style={{ fontFamily:'var(--font-serif),serif', fontSize:'1.4rem', marginBottom:3 }}>
+                  <em style={{ color:subColor(active), fontStyle:'italic' }}>{active}</em> notes
+                </h2>
+                <div style={{ fontFamily:'var(--font-mono),monospace', fontSize:9, color:'#94a3b8' }}>
+                  {activeTasks.length>0 ? `${activeTasks.length} pending task${activeTasks.length!==1?'s':''}` : 'No pending tasks here'}
+                </div>
+              </div>
+              <div style={{ display:'flex', gap:5, flexWrap:'wrap', justifyContent:'flex-end', maxWidth:200 }}>
+                {activeTasks.slice(0,2).map(t=>{
+                  const d   = getDaysLeft(t.deadline)
+                  const col = URGENCY_COLOR[getUrgency(t)]
+                  return (
+                    <span key={t.id} style={{ fontFamily:'var(--font-mono),monospace', fontSize:10, padding:'3px 8px', borderRadius:20, background:`${col}18`, color:col, whiteSpace:'nowrap' }}>
+                      {t.title.length>14?t.title.slice(0,14)+'…':t.title} · {d<0?'overdue':d===0?'today':`${d}d`}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Textarea */}
+            <textarea
+              value={notes[active]||''}
+              onChange={e=>saveNote(active,e.target.value)}
+              placeholder={`Notes for ${active}…\n\nFormulas, key points, reminders — anything.`}
+              style={{ flex:1, background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:9, padding:'16px 18px', color:'#0f172a', fontFamily:'var(--font-mono),monospace', fontSize:12, lineHeight:1.85, resize:'none', outline:'none', caretColor:'#6366f1', overflowY:'auto' }}
+            />
+
+            {/* Footer */}
+            <div style={{ display:'flex', justifyContent:'space-between', marginTop:7, fontFamily:'var(--font-mono),monospace', fontSize:8, color:'#94a3b8' }}>
+              <span>Auto-saved</span>
+              <span>{charCount} chars · {(notes[active]||'').split('\n').filter(Boolean).length} lines</span>
+            </div>
           </div>
         </div>
       </div>

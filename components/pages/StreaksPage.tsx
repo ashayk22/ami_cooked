@@ -31,8 +31,8 @@ export default function StreaksPage({ tasks }: Props) {
     <PageWrapper maxWidth={1100}>
       <PageTitle>Progress & <em style={{ color:'#6366f1', fontStyle:'italic' }}>Streaks</em></PageTitle>
 
-      {/* Stat row */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
+      {/* Stat row — 1 col on mobile, 3 on md+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
         {[
           { icon:'🔥', label:'Current streak',  val:streak+(streak===1?' day':' days'), color:'#6366f1'  },
           { icon:'✅', label:'Tasks completed',  val:done.length,                        color:'#059669' },
@@ -48,8 +48,8 @@ export default function StreaksPage({ tasks }: Props) {
         ))}
       </div>
 
-      {/* Charts */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, alignItems:'start' }}>
+      {/* Charts — 1 col on mobile, 2 on md+ */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5" style={{ alignItems:'start' }}>
 
         <Panel>
           <PanelHeader><div style={{ fontSize:12, fontWeight:700 }}>Last 7 days</div></PanelHeader>
